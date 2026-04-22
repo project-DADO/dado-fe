@@ -1,12 +1,12 @@
+import { Route, Routes } from "react-router";
 import "./App.css";
-import { Button } from "./components/ui/button";
+import IndexPage from "@/pages/index-page";
 
 function App() {
   return (
-    <div className="font-bold underline">
-      Hello DADO
-      <Button>입장하기</Button>
-    </div>
+    <Routes>
+      <Route path="/" element={<IndexPage />} />
+    </Routes>
   );
 }
 
