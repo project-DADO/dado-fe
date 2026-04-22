@@ -1,13 +1,5 @@
-import { Route, Routes } from "react-router";
-import "./App.css";
-import IndexPage from "@/pages/index-page";
+import RootRoute from "@/root-route";
 
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<IndexPage />} />
-    </Routes>
-  );
+export default function App() {
+  return <RootRoute />;
 }
-
-export default App;
