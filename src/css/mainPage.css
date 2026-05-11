@@ -1,0 +1,382 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Gaegu:wght@400;700&display=swap");
+
+/* ─── Reset & Base ──────────────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
+  width: 100%;
+  height: 100%;
+  background: #f7f5f0;
+  overflow: hidden;
+}
+
+.dado-app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background: #faf8f5;
+  font-family: "Noto Sans KR", sans-serif;
+  position: relative;
+}
+
+/* ─── Header ────────────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 32px;
+  background: #fff;
+  border-bottom: 1px solid #f0eee8;
+  flex-shrink: 0;
+  z-index: 100;
+}
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo-circle {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #ffd580 0%, #ff9a5c 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 2px 8px rgba(255, 154, 92, 0.3);
+}
+.logo-text {
+  font-family: "Gaegu", cursive;
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+.header-pet {
+  font-size: 30px;
+  animation: petBounce 2s ease-in-out infinite;
+}
+@keyframes petBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+.menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+}
+
+/* ─── Calendar Layout ───────────────────────────────────────────────────────── */
+.calendar-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 24px;
+  overflow: hidden;
+}
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.calendar-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+}
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-btn,
+.today-btn {
+  background: #fff;
+  border: 1px solid #e8e4dd;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav-btn {
+  width: 32px;
+  height: 32px;
+}
+.today-btn {
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  padding: 0 14px;
+  height: 32px;
+}
+
+.calendar-grid {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+}
+.day-headers {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-bottom: 1px solid #eee;
+}
+.day-header {
+  text-align: center;
+  padding: 12px 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #aaa;
+}
+.day-header.sunday {
+  color: #ff6b9d;
+}
+
+.calendar-weeks {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.calendar-week {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+.calendar-cell {
+  height: 100%;
+  padding: 6px;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+.calendar-week:last-child .calendar-cell {
+  border-bottom: none;
+}
+.calendar-cell:last-child {
+  border-right: none;
+}
+.calendar-cell.today-cell {
+  background: rgba(255, 220, 230, 0.12);
+}
+.cell-day-number {
+  font-size: 13px;
+  text-align: right;
+  margin-bottom: 4px;
+}
+.cell-day-number.out-of-month {
+  opacity: 0.3;
+}
+.cell-day-number.today-number {
+  font-weight: 700;
+  color: #ff6b9d;
+}
+.today-badge {
+  background: #ff6b9d;
+  color: #fff;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff9a5c, #ff6b9d);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(255, 107, 157, 0.4);
+  z-index: 200;
+}
+
+/* ─── Liquid Glass Menu ──────────────────────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 150;
+  animation: fadeIn 0.3s ease forwards;
+}
+.overlay.fade-out {
+  animation: fadeOut 0.4s ease forwards;
+}
+
+.side-menu {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  bottom: 16px;
+  width: 280px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 28px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+  z-index: 200;
+  padding: 24px 16px; /* 좌우 여백 살짝 조절 */
+  display: flex;
+  flex-direction: column;
+  transform-origin: top right;
+  animation: liquidPopIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.side-menu.closing {
+  animation: liquidPopOut 0.4s cubic-bezier(0.36, 0, 0.66, -0.56) forwards;
+}
+
+/* 메뉴 내부 상단 레이아웃 */
+.side-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding: 0 8px;
+}
+.side-menu-title {
+  font-family: "Gaegu", cursive;
+  font-size: 24px;
+  color: #ff6b9d;
+  font-weight: 700;
+}
+.close-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.close-btn:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* 메뉴 아이템 컨테이너 및 리스트 */
+.menu-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.side-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px; /* 아이콘과 글자 간격 */
+  padding: 14px 18px;
+  border-radius: 18px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #444;
+  background: rgba(255, 255, 255, 0.4);
+  transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.side-menu-item:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateX(6px) scale(1.02); /* 호버 시 오른쪽으로 살짝 이동 및 확대 */
+  color: #ff6b9d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* 아이콘 개별 스타일 */
+.menu-item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  transition: color 0.3s;
+}
+
+.side-menu-item:hover .menu-item-icon {
+  color: #ff6b9d; /* 호버 시 아이콘 색상 변경 */
+}
+
+.menu-item-label {
+  font-size: 15px;
+}
+
+/* 로그아웃(Danger) 전용 스타일 */
+.side-menu-item.danger:hover {
+  color: #ff4d4d;
+}
+.side-menu-item.danger:hover .menu-item-icon {
+  color: #ff4d4d;
+}
+
+/* 애니메이션 정의 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes liquidPopIn {
+  from {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes liquidPopOut {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .side-menu {
+    width: calc(100% - 32px);
+    right: 16px;
+    transform-origin: center top;
+  }
+}
