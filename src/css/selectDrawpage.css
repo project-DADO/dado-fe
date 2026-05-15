@@ -1,6 +1,5 @@
 /* ─── SelectDrawage Modal (Liquid Glass) ─── */
 
-/* 모달 전체 배경 */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -14,17 +13,16 @@
   animation: modalFadeIn 0.3s ease forwards;
 }
 
-/* 모달 본체 박스 */
 .select-drawage-modal {
   position: relative;
   width: 90%;
   max-width: 540px;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(30px) saturate(180%);
   -webkit-backdrop-filter: blur(30px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 40px;
-  padding: 40px 20px;
+  padding: 50px 20px 40px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
   text-align: center;
   transform-origin: center;
@@ -33,10 +31,12 @@
 
 .modal-title {
   font-family: "Gaegu", cursive;
-  font-size: 28px;
+  font-size: 26px;
   color: #333;
-  margin-bottom: 40px;
+  margin-bottom: 45px;
   font-weight: 700;
+  line-height: 1.4;
+  word-break: keep-all;
 }
 
 .modal-close-btn {
@@ -64,15 +64,15 @@
   display: flex;
   align-items: stretch;
   justify-content: center;
-  gap: 10px;
+  gap: 15px;
 }
 
 .draw-option-card {
   flex: 1;
   background: transparent;
   border: none;
-  padding: 20px 10px;
-  border-radius: 24px;
+  padding: 24px 12px;
+  border-radius: 28px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
@@ -81,28 +81,37 @@
 }
 
 .draw-option-card:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.6);
   transform: translateY(-8px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 아이콘 및 이모지 공통 스타일 */
+.card-icon,
+.card-emoji {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .card-emoji {
-  font-size: 48px;
-  margin-bottom: 16px;
-  display: block;
+  font-size: 54px;
 }
 
 .card-label {
   font-size: 20px;
   font-weight: 700;
   color: #333;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   display: block;
 }
 
 .card-desc {
-  font-size: 13px;
-  color: #888;
-  line-height: 1.5;
+  font-size: 13.5px;
+  color: #666;
+  line-height: 1.6;
   word-break: keep-all;
 }
 
@@ -111,7 +120,7 @@
   background: linear-gradient(
     to bottom,
     transparent,
-    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.08),
     transparent
   );
   margin: 10px 0;
@@ -141,13 +150,16 @@
 /* ─── Mobile Responsiveness ─── */
 @media (max-width: 767px) {
   .select-drawage-modal {
-    width: 95%;
-    padding: 30px 10px;
+    width: 92%;
+    padding: 40px 15px;
   }
   .modal-title {
-    font-size: 24px;
+    font-size: 22px;
   }
-  .card-emoji {
-    font-size: 40px;
+  .card-label {
+    font-size: 18px;
+  }
+  .card-desc {
+    font-size: 12px;
   }
 }
