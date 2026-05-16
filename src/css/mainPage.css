@@ -77,6 +77,10 @@ body {
   padding: 8px;
   border-radius: 8px;
   display: flex;
+  transition: background 0.2s;
+}
+.menu-btn:hover {
+  background: #f5f5f5;
 }
 
 /* ─── Calendar Layout ───────────────────────────────────────────────────────── */
@@ -161,26 +165,60 @@ body {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
 }
+
 .calendar-cell {
   height: 100%;
-  padding: 6px;
+  padding: 8px;
   border-right: 1px solid #eee;
   border-bottom: 1px solid #eee;
   position: relative;
+  background-color: #fff;
+  transition: background-color 0.2s;
+  cursor: pointer;
 }
-.calendar-week:last-child .calendar-cell {
-  border-bottom: none;
-}
-.calendar-cell:last-child {
-  border-right: none;
+.calendar-cell:hover {
+  background-color: #fcfcfc;
 }
 .calendar-cell.today-cell {
   background: rgba(255, 220, 230, 0.12);
 }
+
+.cell-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 24px;
+}
+
+.cell-add-btn {
+  background: #f0f2f5;
+  border: none;
+  border-radius: 6px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: scale(0.8);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.calendar-cell:hover .cell-add-btn {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: scale(1);
+}
+.cell-add-btn:hover {
+  background: #ff6b9d !important;
+  color: #fff !important;
+}
+
 .cell-day-number {
   font-size: 13px;
   text-align: right;
-  margin-bottom: 4px;
+  flex: 1;
 }
 .cell-day-number.out-of-month {
   opacity: 0.3;
@@ -189,6 +227,7 @@ body {
   font-weight: 700;
   color: #ff6b9d;
 }
+
 .today-badge {
   background: #ff6b9d;
   color: #fff;
@@ -217,7 +256,7 @@ body {
   z-index: 200;
 }
 
-/* ─── Liquid Glass Menu ──────────────────────────────────────────────────────── */
+/* ─── Side Menu (Liquid Glass) ───────────────────────────────────────────── */
 .overlay {
   position: fixed;
   inset: 0;
@@ -242,7 +281,7 @@ body {
   border-radius: 28px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
   z-index: 200;
-  padding: 24px 16px; /* 좌우 여백 살짝 조절 */
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
   transform-origin: top right;
@@ -253,7 +292,6 @@ body {
   animation: liquidPopOut 0.4s cubic-bezier(0.36, 0, 0.66, -0.56) forwards;
 }
 
-/* 메뉴 내부 상단 레이아웃 */
 .side-menu-header {
   display: flex;
   align-items: center;
@@ -279,11 +317,7 @@ body {
   cursor: pointer;
   transition: background 0.2s;
 }
-.close-btn:hover {
-  background: rgba(0, 0, 0, 0.1);
-}
 
-/* 메뉴 아이템 컨테이너 및 리스트 */
 .menu-items-container {
   display: flex;
   flex-direction: column;
@@ -293,7 +327,7 @@ body {
 .side-menu-item {
   display: flex;
   align-items: center;
-  gap: 14px; /* 아이콘과 글자 간격 */
+  gap: 14px;
   padding: 14px 18px;
   border-radius: 18px;
   cursor: pointer;
@@ -302,32 +336,22 @@ body {
   background: rgba(255, 255, 255, 0.4);
   transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
-
 .side-menu-item:hover {
   background: rgba(255, 255, 255, 0.9);
-  transform: translateX(6px) scale(1.02); /* 호버 시 오른쪽으로 살짝 이동 및 확대 */
+  transform: translateX(6px) scale(1.02);
   color: #ff6b9d;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* 아이콘 개별 스타일 */
 .menu-item-icon {
+  color: #888;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #888;
-  transition: color 0.3s;
+  font-size: 18px;
 }
-
 .side-menu-item:hover .menu-item-icon {
-  color: #ff6b9d; /* 호버 시 아이콘 색상 변경 */
+  color: #ff6b9d;
 }
 
-.menu-item-label {
-  font-size: 15px;
-}
-
-/* 로그아웃(Danger) 전용 스타일 */
 .side-menu-item.danger:hover {
   color: #ff4d4d;
 }
@@ -335,7 +359,7 @@ body {
   color: #ff4d4d;
 }
 
-/* 애니메이션 정의 */
+/* ─── Global Animations ─────────────────────────────────────────────────── */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -354,11 +378,11 @@ body {
 }
 @keyframes liquidPopIn {
   from {
-    transform: scale(0.3);
+    transform: scale(0.85) translateY(20px);
     opacity: 0;
   }
   to {
-    transform: scale(1);
+    transform: scale(1) translateY(0);
     opacity: 1;
   }
 }
@@ -368,7 +392,7 @@ body {
     opacity: 1;
   }
   to {
-    transform: scale(0.3);
+    transform: scale(0.85) translateY(20px);
     opacity: 0;
   }
 }
