@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; // 💡 페이지 이동을 위한 useNavigate 추가
 import "../css/selectDrawpage.css";
 
 // 닫기 아이콘
@@ -67,7 +68,19 @@ export default function SelectDrawage({
   onClose,
   selectedDate,
 }: SelectDrawageProps) {
+  const navigate = useNavigate(); // 💡 useNavigate 훅 초기화
+
   if (!isOpen) return null;
+
+  // 💡 그림판 이동 핸들러
+  const handleGoToPaint = () => {
+    // 이동하기 전에 열려있는 모달 닫기
+    onClose();
+
+    // 그림판 페이지의 라우터 경로(Path)로 이동
+    // (만약 selectedDate 데이터가 그림판에서도 필요하다면 state로 넘겨줄 수 있습니다)
+    navigate("/drawing-paint", { state: { date: selectedDate } });
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -101,9 +114,10 @@ export default function SelectDrawage({
 
           <div className="card-divider" />
 
+          {/* 💡 onClick 핸들러를 새로 만든 handleGoToPaint로 교체했습니다 */}
           <button
             className="draw-option-card paint-option"
-            onClick={() => alert(`${selectedDate} 직접 그리기 선택`)}
+            onClick={handleGoToPaint}
           >
             <div className="card-content">
               <span className="card-emoji">🎨</span>

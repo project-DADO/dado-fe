@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../css/mainPage.css";
 import SelectDrawage from "./selectDrawpage";
+import DrawingWithPaint from "./drawingWithPaint"; // 💡 완성된 그림판 컴포넌트 임포트
 
 // ─── Helpers ───
 const KR_DAYS = ["일", "월", "화", "수", "목", "금", "토"] as const;
@@ -98,6 +99,13 @@ export default function DadoMainPage() {
   const [isClosing, setIsClosing] = useState(false);
   const [targetDate, setTargetDate] = useState("");
 
+  // 💡 1. 날짜별 그림 데이터를 객체 형태(Key-Value)로 보관할 상태 스토리지
+  // 예시: { "2026-05-20": "data:image/png;base64,..." }
+  const [drawings, setDrawings] = useState<{ [dateKey: string]: string }>({});
+
+  // 💡 2. 그림판 모달 레이어를 열고 닫을 전용 토글 상태
+  const [isPaintOpen, setIsPaintOpen] = useState(false);
+
   // 캘린더 내부의 + 버튼을 눌렀을 때만 호출됩니다.
   const handleOpenDrawage = (day: number) => {
     setTargetDate(toYMD(viewYear, viewMonth, day));
@@ -110,6 +118,16 @@ export default function DadoMainPage() {
       setIsMenuOpen(false);
       setIsClosing(false);
     }, 400);
+  };
+
+  // 💡 3. 그림판에서 '삽입하기' 완료를 찍었을 때, 메인 스토리지 객체에 매핑 및 저장하는 핸들러
+  const handleSaveDrawing = (imgDataUrl: string) => {
+    if (!targetDate) return;
+    setDrawings((prev) => ({
+      ...prev,
+      [targetDate]: imgDataUrl,
+    }));
+    setIsPaintOpen(false); // 그림이 성공적으로 들어가면 도화지 모달을 닫습니다.
   };
 
   // 캘린더 데이터 생성
@@ -199,9 +217,17 @@ export default function DadoMainPage() {
             {weeks.map((week, wi) => (
               <div className="calendar-week" key={wi}>
                 {week.map((cell, ci) => {
+                  // 💡 각 셀의 고유 날짜 키값 추출 (현재 월에 속해있을 때만 데이터를 기록)
+                  const currentCellDateStr = cell.isCurrentMonth
+                    ? toYMD(viewYear, viewMonth, cell.day)
+                    : "";
+
                   const isToday =
-                    cell.isCurrentMonth &&
-                    toYMD(viewYear, viewMonth, cell.day) === todayStr;
+                    cell.isCurrentMonth && currentCellDateStr === todayStr;
+
+                  // 💡 4. 이 날짜 칸에 저장된 삽입 이력 그림이 존재하는지 체크
+                  const savedImage = drawings[currentCellDateStr];
+
                   return (
                     <div
                       key={ci}
@@ -226,7 +252,23 @@ export default function DadoMainPage() {
                           )}
                         </div>
                       </div>
-                      <div className="cell-events"></div>
+
+                      {/* 💡 5. 이벤트 비축 구역 내에 지정된 그림 바인더 구현 */}
+                      <div className="cell-events">
+                        {savedImage && (
+                          <img
+                            src={savedImage}
+                            alt="기록 이미지"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover", // 셀에 꽉 차게 조절
+                              borderRadius: "6px",
+                              marginTop: "2px",
+                            }}
+                          />
+                        )}
+                      </div>
                     </div>
                   );
                 })}
@@ -236,7 +278,7 @@ export default function DadoMainPage() {
         </div>
       </main>
 
-      {/* 우측 하단 고정 연필 버튼: 클릭 시 모달이 뜨지 않도록 수정함 */}
+      {/* 우측 하단 고정 연필 버튼 */}
       <button
         className="fab"
         onClick={() => {
@@ -277,11 +319,71 @@ export default function DadoMainPage() {
         </>
       )}
 
+      {/* 날짜 가이드 상세 페이지 */}
       <SelectDrawage
         isOpen={isDrawageOpen}
         onClose={() => setIsDrawageOpen(false)}
         selectedDate={targetDate}
+        // 💡 6. 하위 상세 모달에서 그림 그리기 트리거를 작동시켰을 때 처리할 콜백 가교 개설
+        // 만약 selectDrawpage 컴포넌트에 이 프롭스를 보낼 버튼 처리가 필요하다면 연동해두시면 좋습니다.
+        onGoToPaint={() => {
+          setIsDrawageOpen(false);
+          setIsPaintOpen(true);
+        }}
       />
+
+      {/* 💡 7. 그림판을 화면 정중앙에 띄워줄 모달 프레임 마크업 장착 */}
+      {isPaintOpen && (
+        <div
+          className="paint-modal-overlay"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0,0,0,0.4)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1200,
+          }}
+        >
+          <div
+            className="paint-modal-content"
+            style={{
+              backgroundColor: "#ffffff",
+              padding: "24px",
+              borderRadius: "16px",
+              position: "relative",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+            }}
+          >
+            {/* 상단 레이어 닫기 버튼 */}
+            <button
+              onClick={() => setIsPaintOpen(false)}
+              style={{
+                position: "absolute",
+                top: "16px",
+                right: "16px",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "20px",
+                color: "#999",
+              }}
+            >
+              ✕
+            </button>
+
+            {/* 그림판 주입 컴포넌트 호출 */}
+            <DrawingWithPaint
+              onInsert={handleSaveDrawing}
+              selectedDate={targetDate}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
