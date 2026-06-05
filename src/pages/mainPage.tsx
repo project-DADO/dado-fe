@@ -1,7 +1,8 @@
 import { useState } from "react";
 import "../css/mainPage.css";
 import SelectDrawage from "./selectDrawpage";
-import DrawingWithPaint from "./drawingWithPaint"; // 💡 완성된 그림판 컴포넌트 임포트
+import DrawingWithPaint from "./drawingWithPaint";
+import { useDrawingsStore } from "../store/drawings-store";
 
 // ─── Helpers ───
 const KR_DAYS = ["일", "월", "화", "수", "목", "금", "토"] as const;
@@ -98,17 +99,15 @@ export default function DadoMainPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [targetDate, setTargetDate] = useState("");
-
-  // 💡 1. 날짜별 그림 데이터를 객체 형태(Key-Value)로 보관할 상태 스토리지
-  // 예시: { "2026-05-20": "data:image/png;base64,..." }
-  const [drawings, setDrawings] = useState<{ [dateKey: string]: string }>({});
-
-  // 💡 2. 그림판 모달 레이어를 열고 닫을 전용 토글 상태
+  const drawings = useDrawingsStore((s) => s.drawings);
+  const saveDrawing = useDrawingsStore((s) => s.saveDrawing);
+  const setStoreTargetDate = useDrawingsStore((s) => s.setTargetDate);
   const [isPaintOpen, setIsPaintOpen] = useState(false);
 
-  // 캘린더 내부의 + 버튼을 눌렀을 때만 호출됩니다.
   const handleOpenDrawage = (day: number) => {
-    setTargetDate(toYMD(viewYear, viewMonth, day));
+    const dateStr = toYMD(viewYear, viewMonth, day);
+    setTargetDate(dateStr);
+    setStoreTargetDate(dateStr);
     setIsDrawageOpen(true);
   };
 
@@ -120,14 +119,10 @@ export default function DadoMainPage() {
     }, 400);
   };
 
-  // 💡 3. 그림판에서 '삽입하기' 완료를 찍었을 때, 메인 스토리지 객체에 매핑 및 저장하는 핸들러
   const handleSaveDrawing = (imgDataUrl: string) => {
     if (!targetDate) return;
-    setDrawings((prev) => ({
-      ...prev,
-      [targetDate]: imgDataUrl,
-    }));
-    setIsPaintOpen(false); // 그림이 성공적으로 들어가면 도화지 모달을 닫습니다.
+    saveDrawing(targetDate, imgDataUrl);
+    setIsPaintOpen(false);
   };
 
   // 캘린더 데이터 생성
@@ -256,17 +251,7 @@ export default function DadoMainPage() {
                       {/* 💡 5. 이벤트 비축 구역 내에 지정된 그림 바인더 구현 */}
                       <div className="cell-events">
                         {savedImage && (
-                          <img
-                            src={savedImage}
-                            alt="기록 이미지"
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "cover", // 셀에 꽉 차게 조절
-                              borderRadius: "6px",
-                              marginTop: "2px",
-                            }}
-                          />
+                          <img src={savedImage} alt="기록 이미지" />
                         )}
                       </div>
                     </div>
@@ -353,10 +338,13 @@ export default function DadoMainPage() {
             className="paint-modal-content"
             style={{
               backgroundColor: "#ffffff",
-              padding: "24px",
+              padding: "16px 20px 20px",
               borderRadius: "16px",
               position: "relative",
               boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+              width: "min(96vw, 1400px)",
+              maxHeight: "96vh",
+              overflow: "auto",
             }}
           >
             {/* 상단 레이어 닫기 버튼 */}

@@ -1,7 +1,7 @@
 /* 그림판 페이지 전체 레이아웃 */
 .paint-container {
   width: 100%;
-  min-height: 100vh;
+  min-height: auto;
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
@@ -70,12 +70,12 @@
 
 /* 메인 그림판 프레임 */
 .paint-main {
-  width: 95%;
-  max-width: 1024px;
-  margin-top: 24px;
+  width: 100%;
+  max-width: none;
+  margin-top: 8px;
   background-color: #dceeff;
   border-radius: 30px;
-  padding: 24px;
+  padding: 28px 32px 24px;
   border: 1px solid #d1d5db;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
   display: flex;
@@ -99,8 +99,9 @@
   padding: 24px;
   position: relative;
   display: flex;
-  align-items: center;
-  min-height: 480px;
+  align-items: stretch;
+  height: min(62vh, 680px);
+  min-height: 520px;
 }
 
 /* 왼쪽 도구(툴바) 트레이 */
@@ -219,8 +220,11 @@
 .paint-canvas {
   width: 100%;
   height: 100%;
+  min-height: 480px;
+  flex: 1;
   cursor: crosshair;
   border-radius: 16px;
+  display: block;
 }
 
 /* 하단 제어 버튼 컨테이너 */

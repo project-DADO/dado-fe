@@ -81,26 +81,35 @@ const DrawingWithPaint: React.FC<DrawingWithPaintProps> = ({
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const wrapper = canvas?.closest(".canvas-wrapper") as HTMLElement | null;
+    if (!canvas || !wrapper) return;
 
-    canvas.width = canvas.parentElement?.clientWidth || 800;
-    canvas.height = 450;
+    const setupCanvas = () => {
+      const width = wrapper.clientWidth;
+      const height = Math.max(
+        520,
+        Math.min(Math.floor(window.innerHeight * 0.58), 680),
+      );
 
-    const context = canvas.getContext("2d");
-    if (!context) return;
+      canvas.width = width;
+      canvas.height = height;
 
-    context.lineCap = "round";
-    context.lineJoin = "round";
-    contextRef.current = context;
+      const context = canvas.getContext("2d");
+      if (!context) return;
 
-    // 초기 흰 도화지 배경 채우기
-    context.fillStyle = "#FFFFFF";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+      context.lineCap = "round";
+      context.lineJoin = "round";
+      contextRef.current = context;
 
-    // 최초 빈 도화지 상태를 히스토리 스택의 '첫 번째(0번)'로 명확히 저장
-    const initialDataUrl = canvas.toDataURL();
-    historyStack.current = [initialDataUrl];
-    historyIndex.current = 0;
+      context.fillStyle = "#FFFFFF";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      const initialDataUrl = canvas.toDataURL();
+      historyStack.current = [initialDataUrl];
+      historyIndex.current = 0;
+    };
+
+    requestAnimationFrame(setupCanvas);
   }, []);
 
   // 펜 옵션 변경 시 스타일 동기화 로직

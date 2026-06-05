@@ -1,6 +1,7 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // 💡 페이지 이동을 위한 useNavigate 추가
+import { useNavigate } from "react-router-dom";
 import "../css/selectDrawpage.css";
+import { useDrawingsStore } from "../store/drawings-store";
 
 // 닫기 아이콘
 const CloseIcon = () => (
@@ -61,24 +62,29 @@ interface SelectDrawageProps {
   isOpen: boolean;
   onClose: () => void;
   selectedDate: string;
+  onGoToPaint?: () => void;
 }
 
 export default function SelectDrawage({
   isOpen,
   onClose,
   selectedDate,
+  onGoToPaint,
 }: SelectDrawageProps) {
-  const navigate = useNavigate(); // 💡 useNavigate 훅 초기화
+  const navigate = useNavigate();
+  const setTargetDate = useDrawingsStore((s) => s.setTargetDate);
 
   if (!isOpen) return null;
 
-  // 💡 그림판 이동 핸들러
   const handleGoToPaint = () => {
-    // 이동하기 전에 열려있는 모달 닫기
     onClose();
+    setTargetDate(selectedDate);
 
-    // 그림판 페이지의 라우터 경로(Path)로 이동
-    // (만약 selectedDate 데이터가 그림판에서도 필요하다면 state로 넘겨줄 수 있습니다)
+    if (onGoToPaint) {
+      onGoToPaint();
+      return;
+    }
+
     navigate("/drawing-paint", { state: { date: selectedDate } });
   };
 
