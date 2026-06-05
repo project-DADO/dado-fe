@@ -1,0 +1,257 @@
+/* 그림판 페이지 전체 레이아웃 */
+.paint-container {
+  width: 100%;
+  min-height: auto;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: sans-serif;
+}
+
+/* 상단 네비게이션 헤더 */
+.paint-header {
+  width: 100%;
+  height: 64px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-left: 24px;
+  padding-right: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #fed7aa;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.logo-text {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #1f2937;
+}
+
+.header-user {
+  width: 40px;
+  height: 40px;
+  background-color: #f3f4f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.menu-line {
+  width: 24px;
+  height: 2px;
+  background-color: #4b5563;
+}
+
+/* 메인 그림판 프레임 */
+.paint-main {
+  width: 100%;
+  max-width: none;
+  margin-top: 8px;
+  background-color: #dceeff;
+  border-radius: 30px;
+  padding: 28px 32px 24px;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.paint-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: #1f2937;
+  margin-bottom: 16px;
+}
+
+/* 캔버스 및 도구 감싸는 내부 박스 */
+.canvas-wrapper {
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 24px;
+  border: 1px solid #d1d5db;
+  padding: 24px;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  height: min(62vh, 680px);
+  min-height: 520px;
+}
+
+/* 왼쪽 도구(툴바) 트레이 */
+.tool-tray {
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid #9ca3af;
+  border-radius: 9999px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 8px;
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+  background-color: #ffffff;
+  z-index: 10;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.tool-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+}
+
+/* 선택된 펜 효과 (오른쪽으로 슥 나오는 효과) */
+.tool-button.active {
+  transform: translateX(8px) scale(1.1);
+}
+
+/* 펜 바디 일괄 지정 */
+.pen-body {
+  width: 48px;
+  height: 20px;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+  border: 1px solid #e5e7eb;
+  border-right: none;
+}
+
+/* 숨겨진 컬러 피커 내장 스타일 */
+.hidden-color-picker {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+/* 펜촉 삼각형 모양 */
+.pen-tip {
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left-width: 12px;
+  border-left-style: solid;
+}
+
+/* 지우개 전용 UI */
+.eraser-tool {
+  width: 48px;
+  height: 28px;
+  background-color: #fecaca;
+  border: 1px solid #fca5a5;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+  color: #b91c1c;
+}
+
+/* 하단 데코 및 되돌리기/앞으로돌리기 화살표 버튼 그룹 */
+.arrow-group {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.arrow-btn {
+  width: 24px;
+  height: 24px;
+  background-color: #fdba74;
+  border-radius: 50%;
+  font-size: 12px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.arrow-btn:active {
+  transform: scale(0.9);
+}
+
+.arrow-btn:disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+/* 실제 캔버스 엘리먼트 */
+.paint-canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 480px;
+  flex: 1;
+  cursor: crosshair;
+  border-radius: 16px;
+  display: block;
+}
+
+/* 하단 제어 버튼 컨테이너 */
+.action-group {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.action-btn {
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  background-color: #e28743;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 18px;
+  border-radius: 9999px;
+  border: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.action-btn:hover {
+  background-color: #c97232;
+}

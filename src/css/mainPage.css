@@ -175,6 +175,8 @@ body {
   background-color: #fff;
   transition: background-color 0.2s;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
 }
 .calendar-cell:hover {
   background-color: #fcfcfc;
@@ -237,6 +239,23 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.cell-events {
+  margin-top: 4px;
+  min-height: 48px;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.cell-events img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
 }
 
 .fab {

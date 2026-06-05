@@ -1,5 +1,7 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../css/selectDrawpage.css";
+import { useDrawingsStore } from "../store/drawings-store";
 
 // 닫기 아이콘
 const CloseIcon = () => (
@@ -60,14 +62,31 @@ interface SelectDrawageProps {
   isOpen: boolean;
   onClose: () => void;
   selectedDate: string;
+  onGoToPaint?: () => void;
 }
 
 export default function SelectDrawage({
   isOpen,
   onClose,
   selectedDate,
+  onGoToPaint,
 }: SelectDrawageProps) {
+  const navigate = useNavigate();
+  const setTargetDate = useDrawingsStore((s) => s.setTargetDate);
+
   if (!isOpen) return null;
+
+  const handleGoToPaint = () => {
+    onClose();
+    setTargetDate(selectedDate);
+
+    if (onGoToPaint) {
+      onGoToPaint();
+      return;
+    }
+
+    navigate("/drawing-paint", { state: { date: selectedDate } });
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -101,9 +120,10 @@ export default function SelectDrawage({
 
           <div className="card-divider" />
 
+          {/* 💡 onClick 핸들러를 새로 만든 handleGoToPaint로 교체했습니다 */}
           <button
             className="draw-option-card paint-option"
-            onClick={() => alert(`${selectedDate} 직접 그리기 선택`)}
+            onClick={handleGoToPaint}
           >
             <div className="card-content">
               <span className="card-emoji">🎨</span>
