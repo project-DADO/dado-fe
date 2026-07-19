@@ -1,6 +1,9 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import DrawingWithPaint from "./drawingWithPaint";
-import { useDrawingsStore } from "../store/drawings-store";
+import {
+  useDrawingsStore,
+  getSaveErrorMessage,
+} from "../store/drawings-store";
 
 interface LocationState {
   date?: string;
@@ -11,14 +14,21 @@ export default function DrawingPaintPage() {
   const location = useLocation();
   const targetDate = useDrawingsStore((s) => s.targetDate);
   const saveDrawing = useDrawingsStore((s) => s.saveDrawing);
+  const isSaving = useDrawingsStore((s) => s.isSaving);
 
   const selectedDate =
     (location.state as LocationState | null)?.date || targetDate;
 
-  const handleInsert = (imgDataUrl: string) => {
+  const handleInsert = async (imgDataUrl: string) => {
     if (!selectedDate) return;
-    saveDrawing(selectedDate, imgDataUrl);
-    navigate("/");
+
+    try {
+      await saveDrawing(selectedDate, imgDataUrl);
+      alert(`${selectedDate} 칸에 그림이 성공적으로 삽입되었습니다!`);
+      navigate("/");
+    } catch (error) {
+      alert(getSaveErrorMessage(error));
+    }
   };
 
   if (!selectedDate) {
@@ -27,6 +37,10 @@ export default function DrawingPaintPage() {
   }
 
   return (
-    <DrawingWithPaint onInsert={handleInsert} selectedDate={selectedDate} />
+    <DrawingWithPaint
+      onInsert={handleInsert}
+      selectedDate={selectedDate}
+      isSaving={isSaving}
+    />
   );
 }
