@@ -13,14 +13,16 @@ interface PenOption {
 
 // 💡 메인 캘린더 컴포넌트(`mainPage.tsx`)와 안전하게 연동하기 위한 프롭스 인터페이스 규격
 interface DrawingWithPaintProps {
-  onInsert: (imgDataUrl: string) => void; // 완성된 이미지를 부모에게 보낼 콜백 함수
-  selectedDate: string; // 현재 그리기를 진행 중인 타겟 날짜 문자열
+  onInsert: (imgDataUrl: string) => Promise<void>;
+  selectedDate: string;
+  isSaving?: boolean;
 }
 
 // 💡 컴포넌트 이름의 첫 글자를 대문자(DrawingWithPaint)로 정립하여 React 표준 규격을 준수합니다.
 const DrawingWithPaint: React.FC<DrawingWithPaintProps> = ({
   onInsert,
   selectedDate,
+  isSaving = false,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -252,17 +254,12 @@ const DrawingWithPaint: React.FC<DrawingWithPaintProps> = ({
     saveToHistory();
   };
 
-  // 💡 [삽입하기] 함수 개편: 부모 컴포넌트(`mainPage.tsx`)로 캔버스 스냅샷 데이터 전달
-  const handleInsert = () => {
+  const handleInsert = async () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || isSaving) return;
 
-    // 현재 캔버스 스크린을 Base64 주소값(PNG 형태)으로 변환 압축
     const dataUrl = canvas.toDataURL("image/png");
-
-    // 부모의 매핑 스토리지 객체에 저장 콜백 트리거 가동
-    onInsert(dataUrl);
-    alert(`${selectedDate} 칸에 그림이 성공적으로 삽입되었습니다!`);
+    await onInsert(dataUrl);
   };
 
   // 펜 클릭 제어 로직
@@ -392,11 +389,19 @@ const DrawingWithPaint: React.FC<DrawingWithPaintProps> = ({
 
         {/* 하단 액션 동작 바 */}
         <div className="action-group">
-          <button onClick={clearCanvas} className="action-btn">
+          <button
+            onClick={clearCanvas}
+            className="action-btn"
+            disabled={isSaving}
+          >
             다시 그리기
           </button>
-          <button onClick={handleInsert} className="action-btn">
-            삽입하기
+          <button
+            onClick={handleInsert}
+            className="action-btn"
+            disabled={isSaving}
+          >
+            {isSaving ? "저장 중..." : "삽입하기"}
           </button>
         </div>
       </main>

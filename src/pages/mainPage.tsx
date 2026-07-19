@@ -2,7 +2,7 @@ import { useState } from "react";
 import "../css/mainPage.css";
 import SelectDrawage from "./selectDrawpage";
 import DrawingWithPaint from "./drawingWithPaint";
-import { useDrawingsStore } from "../store/drawings-store";
+import { useDrawingsStore, getSaveErrorMessage } from "../store/drawings-store";
 
 // ─── Helpers ───
 const KR_DAYS = ["일", "월", "화", "수", "목", "금", "토"] as const;
@@ -101,6 +101,7 @@ export default function DadoMainPage() {
   const [targetDate, setTargetDate] = useState("");
   const drawings = useDrawingsStore((s) => s.drawings);
   const saveDrawing = useDrawingsStore((s) => s.saveDrawing);
+  const isSaving = useDrawingsStore((s) => s.isSaving);
   const setStoreTargetDate = useDrawingsStore((s) => s.setTargetDate);
   const [isPaintOpen, setIsPaintOpen] = useState(false);
 
@@ -119,10 +120,16 @@ export default function DadoMainPage() {
     }, 400);
   };
 
-  const handleSaveDrawing = (imgDataUrl: string) => {
+  const handleSaveDrawing = async (imgDataUrl: string) => {
     if (!targetDate) return;
-    saveDrawing(targetDate, imgDataUrl);
-    setIsPaintOpen(false);
+
+    try {
+      await saveDrawing(targetDate, imgDataUrl);
+      alert(`${targetDate} 칸에 그림이 성공적으로 삽입되었습니다!`);
+      setIsPaintOpen(false);
+    } catch (error) {
+      alert(getSaveErrorMessage(error));
+    }
   };
 
   // 캘린더 데이터 생성
@@ -368,6 +375,7 @@ export default function DadoMainPage() {
             <DrawingWithPaint
               onInsert={handleSaveDrawing}
               selectedDate={targetDate}
+              isSaving={isSaving}
             />
           </div>
         </div>
